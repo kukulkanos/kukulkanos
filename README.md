@@ -1,4 +1,5 @@
-### Kukulkan OS - El sistema operativo para seguridad, auditores, y estudiantes en Español 👋
+### Kukulkan OS 
+#### El sistema operativo para seguridad, auditores, y estudiantes en Español 👋
 #### Basado en Debian Buster 10.6 
 
 <!--
