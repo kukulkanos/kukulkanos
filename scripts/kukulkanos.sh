@@ -11,6 +11,27 @@ read nothing
 export MyNAME=`echo "$0" | awk -F '/' '{print $(NF)}'`
 export MyDIR=`echo "$0" | awk -F $MyNAME '{print $1}'`
 cd $MyDIR
+apt update
+apt install -y wget curl rsync git mc patch iotop gddrescue pigz dkms aufs-tools aufs-dkms cgroupfs-mount 
+apt install -y build-essential qtwebkit5* qttools5-dev-tools  python3-pyqt5* python3-dev python3-venv ca-certificates apt-transport-https
+
+for repo in kukulkanos kaambesaj
+do
+	if ! test -e /usr/share/$repo/.git
+		then 
+			cd /tmp
+			rm -rf "/tmp/$repo"
+			if git clone https://github.com/kukulkanos/$repo.git $repo
+				then rsync -av --delete "/tmp/$repo/" "/usr/share/$repo/"
+				else cd /usr/share/ && tar -xzvf "$MyDIR/../repos/$repo.tgz"
+			fi
+	fi
+	cd "/usr/share/$repo"
+	git pull
+	ln -s "/usr/share/$repo/scripts/$repo.sh" "/bin/$repo"
+	chmod +x "/usr/share/$repo/$repo.sh"
+done
+cd "$MyDIR"
 if cat /etc/inputrc | grep "history-search-backward" | grep "#"
 	then 
 		patch /etc/inputrc < "$MyDIR/../config/etc/inputrc.patch"
@@ -22,9 +43,6 @@ fi
 for file in "$MyDIR/../config/keys"/*.pgp
 	do cat "$file" | apt-key add -
 done
-apt update
-apt install -y wget curl rsync git mc patch iotop gddrescue pigz dkms aufs-tools aufs-dkms cgroupfs-mount 
-apt install -y build-essential qtwebkit5* qttools5-dev-tools  python3-pyqt5* python3-dev python3-venv ca-certificates apt-transport-https
 for picture in desktop-background desktop-grub desktop-login-background
 do
 	if ! test -e /usr/share/kukulkanos/media/backgrounds/default/$picture.png
@@ -65,12 +83,16 @@ EOF
 	#images
 	if test -e "$MyDIR"/../applets/binary
 	then
-		find "$MyDIR"/../applets/binary -iname "*.tgz" |
+		cd "$MyDIR"/../applets/binary
+		find ./ -iname "*.tgz" |
 		while read image
 			do 
-			echo $image 
-			zcat "$image" | docker load
+			INAME=`dirname $image | awk -F '\./' '{print $2}'`:`basename $image | awk -F '.tgz' '{print $1}'`
+			echo $image $INAME
+			ID=`zcat "$image" | docker load | awk -F ":" '{print $3}'`
+			docker tag "$ID" "$INAME"
 		done
+		cd "$MyDIR"
 	fi
 fi
 if ! docker-compose version
@@ -96,12 +118,16 @@ then
 	#images
 	if test -e "$MyDIR"/../applications/kubernetes/docker.images
 	then
-		find "$MyDIR"/../applications/kubernetes/docker.images -iname "*.tgz" |
+		cd "$MyDIR"/../applications/kubernetes/docker.images
+		find ./ -iname "*.tgz" |
 		while read image
 			do 
-			echo $image 
-			zcat "$image" | docker load
+			INAME=`dirname $image | awk -F '\./' '{print $2}'`:`basename $image | awk -F '.tgz' '{print $1}'`
+			echo $image $INAME
+			ID=`zcat "$image" | docker load | awk -F ":" '{print $3}'`
+			docker tag "$ID" "$INAME"
 		done
+		cd "$MyDIR"
 	fi
 	apt install -y ethtool conntrack ebtables 
 	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
@@ -122,24 +148,9 @@ then
 	# install Dashboard
 	#kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc2/aio/deploy/recommended.yaml;
 	kubectl apply -f "$MyDIR"/../applications/kubernetes/yaml/recommended.yaml
-cat > dashboard-admin.yaml <<EOF
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: kubernetes-dashboard
-  namespace: kubernetes-dashboard
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-  - kind: ServiceAccount
-    name: kubernetes-dashboard
-    namespace: kubernetes-dashboard
-EOF
 	kubectl delete clusterrolebinding/kubernetes-dashboard;
-	kubectl apply -f dashboard-admin.yaml;
-
+	kubectl apply -f "$MyDIR"/../applications/kubernetes/yaml/dashboard-admin.yaml;
+	
 	# get the dashboard secret and display it
 	kubectl get secret -n kubernetes-dashboard | grep kubernetes-dashboard-token- | awk '{print $1}' | xargs kubectl describe secret -n kubernetes-dashboard;
 	systemctl enable kubelet
