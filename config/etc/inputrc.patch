@@ -1,0 +1,13 @@
+--- inputrc.orig	2020-11-09 15:47:23.721723140 -0600
++++ inputrc	2020-11-09 15:45:13.536763615 -0600
+@@ -38,8 +38,8 @@
+ # "\e[6~": end-of-history
+ 
+ # alternate mappings for "page up" and "page down" to search the history
+-# "\e[5~": history-search-backward
+-# "\e[6~": history-search-forward
++"\e[5~": history-search-backward
++"\e[6~": history-search-forward
+ 
+ # mappings for Ctrl-left-arrow and Ctrl-right-arrow for word moving
+ "\e[1;5C": forward-word
