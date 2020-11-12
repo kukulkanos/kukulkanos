@@ -8,7 +8,12 @@ echo "██╗  ██╗██╗   ██╗██╗  ██╗██╗   �
 cat /etc/kukulkan.banner
 echo "Esto convertirá Debian 10 en KukulkanOS [ENTER=CONTINUAR] [CTR+C=CANCELAR]"
 read nothing
-export MyNAME=`echo "$0" | awk -F '/' '{print $(NF)}'`
+if test -h "$0"
+then
+	export MyNAME=`readlink "$0" | awk -F '/' '{print $(NF)}'` 
+else
+	export MyNAME=`echo "$0" | awk -F '/' '{print $(NF)}'`
+fi
 export MyDIR=`echo "$0" | awk -F $MyNAME '{print $1}'`
 cd $MyDIR
 apt update
@@ -28,8 +33,9 @@ do
 	fi
 	cd "/usr/share/$repo"
 	git pull
+	rm "/bin/$repo"
 	ln -s "/usr/share/$repo/scripts/$repo.sh" "/bin/$repo"
-	chmod +x "/usr/share/$repo/$repo.sh"
+	chmod +x "/usr/share/$repo/scripts/$repo.sh"
 done
 cd "$MyDIR"
 if cat /etc/inputrc | grep "history-search-backward" | grep "#"
