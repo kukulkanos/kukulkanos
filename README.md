@@ -1,4 +1,5 @@
-### Hi there 👋
+### Kukulkan OS - El sistema operativo para seguridad, auditores, y estudiantes en Español 👋
+#### Basado en Debian Buster 10.6 
 
 <!--
 **kukulkanos/kukulkanos** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
