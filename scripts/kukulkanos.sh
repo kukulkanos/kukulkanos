@@ -51,12 +51,8 @@ for file in "$MyDIR/../config/keys"/*.pgp
 done
 for picture in desktop-background desktop-grub desktop-login-background
 do
-	if ! test -e /usr/share/kukulkanos/media/backgrounds/default/$picture.png
+	if ! test -e /etc/alternatives/$picture.orig
 	then
-		mkdir -p /usr/share/kukulkanos/media/backgrounds/default/
-		if ! cp -v "$MyDIR/../media/backgrounds/default/$picture.png" "/usr/share/kukulkanos/media/backgrounds/default/$picture.png"
-			then wget -O /usr/share/kukulkanos/media/backgrounds/default/$picture.png https://downloads.kukulkanos.net/media/backgrounds/default/$picture.png
-		fi
 		if ! test -e /etc/alternatives/$picture.orig
 			then 
 				mv -v /etc/alternatives/$picture /etc/alternatives/$picture.orig
