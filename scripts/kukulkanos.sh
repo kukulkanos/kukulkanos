@@ -8,13 +8,14 @@ echo "██╗  ██╗██╗   ██╗██╗  ██╗██╗   �
 cat /etc/kukulkan.banner
 echo "Esto convertirá Debian 10 en KukulkanOS [ENTER=CONTINUAR] [CTR+C=CANCELAR]"
 read nothing
-if test -h "$0"
-then
-	export MyNAME=`readlink "$0" | awk -F '/' '{print $(NF)}'` 
-else
-	export MyNAME=`echo "$0" | awk -F '/' '{print $(NF)}'`
-fi
-export MyDIR=`echo "$0" | awk -F $MyNAME '{print $1}'`
+#if test -h "$0"
+#then
+#	export MyNAME=`readlink "$0" | awk -F '/' '{print $(NF)}'` 
+#else
+#	export MyNAME=`echo "$0" | awk -F '/' '{print $(NF)}'`
+#fi
+#export MyDIR=`echo "$0" | awk -F $MyNAME '{print $1}'`
+MyDIR=/usr/share/kukulkanos/
 cd $MyDIR
 apt update
 apt install -y wget curl rsync git mc patch iotop gddrescue pigz dkms aufs-tools aufs-dkms cgroupfs-mount 
@@ -22,7 +23,8 @@ apt install -y locales iotop gddrescue pigz dkms aufs-tools aufs-dkms cgroupfs-m
 
 for repo in kukulkanos kaambesaj
 do
-	if ! test -e /usr/share/$repo/.git
+	cd /usr/share/$repo/
+	if ! git pull
 		then 
 			cd /tmp
 			rm -rf "/tmp/$repo"
@@ -44,7 +46,7 @@ if cat /etc/inputrc | grep "history-search-backward" | grep "#"
 fi
 if ! cat /etc/default/grub | grep "spectre_v2"
 	then 
-		patch /etc/default/grub < "$MyDIR/../config/etc/default/grub.patch"
+		patch /etc/default/grub < "$MyDIR/config/etc/default/grub.patch"
 fi
 for file in "$MyDIR/../config/keys"/*.pgp
 	do cat "$file" | apt-key add -
