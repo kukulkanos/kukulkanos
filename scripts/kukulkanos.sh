@@ -18,11 +18,14 @@ read nothing
 MyDIR=/usr/share/kukulkanos/
 cd $MyDIR
 curl http://debian.kukulkanos.net/apt/debian/doc/kukulkanos.gpg.key | apt-key add -
-apt-add-repository "deb http://debian.kukulkanos.net/apt/debian/ buster main non-free"
+echo "deb http://debian.kukulkanos.net/apt/debian/ buster main non-free" > /etc/apt/sources.list.d/kukulkanos.list
 apt update
 apt install -y wget curl rsync git mc patch iotop gddrescue pigz dkms aufs-tools aufs-dkms cgroupfs-mount 
 apt install -y locales iotop gddrescue pigz dkms aufs-tools aufs-dkms cgroupfs-mount build-essential qttools5-dev-tools python3-pyqt5-dbg python3-pyqt5.qsci python3-pyqt5.qtchart python3-pyqt5.qtmultimedia python3-pyqt5.qtopengl-dbg python3-pyqt5.qtopengl python3-pyqt5.qtpositioning python3-pyqt5.qtquick python3-pyqt5.qtsensors python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg-dbg python3-pyqt5.qtsvg python3-pyqt5.qtwebchannel python3-pyqt5.qtwebengine python3-pyqt5.qtwebkit python3-pyqt5.qtwebsockets python3-pyqt5.qtx11extras python3-pyqt5.qtxmlpatterns python3-pyqt5.qwt python3-pyqt5 python3-dev python3-venv ca-certificates apt-transport-https lxde lxqt
-
+for file in `ls /etc/import-keys/`
+do
+	apt-key add \$file
+done
 for repo in kukulkanos kaambesaj
 do
 	cd /usr/share/$repo/
@@ -80,7 +83,7 @@ EOF
 	curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
 	apt-key fingerprint 0EBFCD88
 	#add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
-	add-apt-repository "deb https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+	echo "deb https://download.docker.com/linux/debian buster stable" > /etc/apt/sources.list.d/dockerio.list
 	apt update
 	dpkg -i "$MyDIR"/../applications/docker-ce/*.deb
 	apt install -y docker-ce docker-ce-cli containerd.io
@@ -137,7 +140,7 @@ then
 	fi
 	apt install -y ethtool conntrack ebtables 
 	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-	echo 'deb https://apt.kubernetes.io/ kubernetes-xenial main' > /etc/apt/sources.list.d/kubernetes.list
+	echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
 	apt update
 	dpkg -i "$MyDIR"/../applications/kubernetes/*.deb
 	apt install -y kubelet kubeadm kubectl
@@ -161,6 +164,11 @@ then
 	kubectl get secret -n kubernetes-dashboard | grep kubernetes-dashboard-token- | awk '{print $1}' | xargs kubectl describe secret -n kubernetes-dashboard;
 	systemctl enable kubelet
 fi
-
-
+if ! vboxmanage --version
+	then
+		echo "deb http://download.virtualbox.org/virtualbox/debian buster contrib" > /etc/apt/sources.list.d/virtualbox.list
+		wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+		apt update
+		apt install virtualbox
+fi
 cat /etc/kukulkan.banner
