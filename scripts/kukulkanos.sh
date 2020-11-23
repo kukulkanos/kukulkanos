@@ -23,7 +23,7 @@ if ! cat /etc/sources.list | grep debian.net
 then apt-add-repository "deb http://http.debian.net/debian/ buster main contrib non-free"
 fi
 if ! cat /etc/sources.list | grep debian.org
-apt-add-repository "deb http://security.debian.org/ buster/updates main contrib"
+then apt-add-repository "deb http://security.debian.org/ buster/updates main contrib"
 fi
 apt update
 apt install -y wget curl rsync git mc patch iotop gddrescue pigz dkms aufs-tools aufs-dkms cgroupfs-mount 
