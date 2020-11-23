@@ -169,6 +169,6 @@ if ! vboxmanage --version
 		echo "deb http://download.virtualbox.org/virtualbox/debian buster contrib" > /etc/apt/sources.list.d/virtualbox.list
 		wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
 		apt update
-		apt install virtualbox
+		apt install virtualbox-6.1
 fi
 cat /etc/kukulkan.banner
