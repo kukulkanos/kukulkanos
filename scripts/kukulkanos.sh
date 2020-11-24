@@ -24,10 +24,10 @@ curl http://debian.kukulkanos.net/apt/debian/doc/kukulkanos.gpg.key | apt-key ad
 echo "deb http://debian.kukulkanos.net/apt/debian/ buster main non-free" > /etc/apt/sources.list.d/kukulkanos.list
 if ! cat /etc/apt/sources.list | grep debian.net
 then 
-	echo "deb http://http.debian.net/debian/ buster main contrib non-free" > /etc/apt/sources.d/debian.list
+	echo "deb http://http.debian.net/debian/ buster main contrib non-free" > /etc/apt/sources.list.d/debian.list
 fi
 if ! cat /etc/apt/sources.list | grep debian.org
-then echo "deb http://security.debian.org/ buster/updates main contrib" > /etc/apt/sources.d/debian_updates.list
+then echo "deb http://security.debian.org/ buster/updates main contrib" > /etc/apt/sources.list.d/debian_updates.list
 fi
 apt update
 apt install -y wget curl rsync git mc patch iotop gddrescue pigz dkms aufs-tools aufs-dkms cgroupfs-mount 
