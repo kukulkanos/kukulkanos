@@ -182,5 +182,6 @@ if ! vboxmanage --version
 		apt update
 		apt install -y linux-headers-$(uname -r)
 		apt install -y virtualbox-6.1
+		/sbin/vboxconfig
 fi
 cat /etc/kukulkan.banner
