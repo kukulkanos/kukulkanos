@@ -32,7 +32,7 @@ fi
 apt update
 apt install -y wget curl rsync git mc patch iotop gddrescue pigz dkms aufs-tools aufs-dkms cgroupfs-mount 
 apt install -y locales iotop gddrescue pigz dkms aufs-tools aufs-dkms cgroupfs-mount build-essential qttools5-dev-tools python3-pyqt5-dbg python3-pyqt5.qsci python3-pyqt5.qtchart python3-pyqt5.qtmultimedia python3-pyqt5.qtopengl-dbg python3-pyqt5.qtopengl python3-pyqt5.qtpositioning python3-pyqt5.qtquick python3-pyqt5.qtsensors python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg-dbg python3-pyqt5.qtsvg python3-pyqt5.qtwebchannel python3-pyqt5.qtwebengine python3-pyqt5.qtwebkit python3-pyqt5.qtwebsockets python3-pyqt5.qtx11extras python3-pyqt5.qtxmlpatterns python3-pyqt5.qwt python3-pyqt5 python3-dev python3-venv ca-certificates apt-transport-https lxde lxqt
-apt install linux-headers-$(uname -r)
+apt install -y linux-headers-$(uname -r)
 for file in `find -type f /etc/import-keys/`
 do
 	apt-key add $file
@@ -180,7 +180,7 @@ if ! vboxmanage --version
 		echo "deb http://download.virtualbox.org/virtualbox/debian buster contrib" > /etc/apt/sources.list.d/virtualbox.list
 		wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | apt-key add -
 		apt update
-		apt install linux-headers-$(uname -r)
-		apt install virtualbox-6.1
+		apt install -y linux-headers-$(uname -r)
+		apt install -y virtualbox-6.1
 fi
 cat /etc/kukulkan.banner
